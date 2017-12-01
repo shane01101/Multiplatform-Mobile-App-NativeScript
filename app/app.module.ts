@@ -3,9 +3,11 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { AppRoutingModule } from "./app.routing";
 import { NativeScriptHttpModule } from "nativescript-angular/http";
 import { AppComponent } from "./app.component";
+import { NativeScriptUISideDrawerModule } from "nativescript-telerik-ui/sidedrawer/angular";
 
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
 import { MenuComponent } from './menu/menu.component';
+import { DrawerComponent } from "./shared/drawer/drawer.component";
 
 import { DishService } from './services/dish.service';
 import { ProcessHTTPMsgService } from './services/process-httpmsg.service';
@@ -19,12 +21,14 @@ import { baseURL } from './shared/baseurl';
     imports: [
         NativeScriptModule,
         AppRoutingModule,
-        NativeScriptHttpModule
+        NativeScriptHttpModule,
+        NativeScriptUISideDrawerModule
     ],
     declarations: [
         AppComponent,
         MenuComponent,
-        DishdetailComponent
+        DishdetailComponent,
+        DrawerComponent
     ],
     providers: [
         {provide: 'BaseURL', useValue: baseURL},
