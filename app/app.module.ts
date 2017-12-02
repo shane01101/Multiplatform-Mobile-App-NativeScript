@@ -9,6 +9,8 @@ import { DishdetailComponent } from './dishdetail/dishdetail.component';
 import { MenuComponent } from './menu/menu.component';
 import { DrawerComponent } from "./shared/drawer/drawer.component";
 import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
+import { ContactComponent } from './contact/contact.component';
 
 import { DishService } from './services/dish.service';
 import { ProcessHTTPMsgService } from './services/process-httpmsg.service';
@@ -32,7 +34,9 @@ import { baseURL } from './shared/baseurl';
         MenuComponent,
         DishdetailComponent,
         DrawerComponent,
-        HomeComponent
+        HomeComponent,
+        AboutComponent,
+        ContactComponent
     ],
     providers: [
         {provide: 'BaseURL', useValue: baseURL},
