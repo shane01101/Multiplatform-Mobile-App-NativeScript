@@ -8,6 +8,7 @@ import { TNSFontIconModule } from 'nativescript-ngx-fonticon';
 import { NativeScriptUIListViewModule } from "nativescript-telerik-ui/listview/angular";
 import { NativeScriptFormsModule } from "nativescript-angular/forms";
 import { ReactiveFormsModule } from '@angular/forms';
+import { CouchbaseService } from './services/couchbase.service';
 
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
 import { MenuComponent } from './menu/menu.component';
@@ -65,7 +66,8 @@ import { baseURL } from './shared/baseurl';
         ProcessHTTPMsgService,
         PromotionService,
         LeaderService,
-        FavoriteService
+        FavoriteService,
+        CouchbaseService
     ],
     schemas: [
         NO_ERRORS_SCHEMA
