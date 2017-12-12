@@ -5,7 +5,12 @@ import { Switch } from 'ui/switch';
 import { Validators, FormBuilder, FormGroup} from '@angular/forms';
 import { ModalDialogService, ModalDialogOptions } from "nativescript-angular/modal-dialog";
 import { ReservationModalComponent } from "../reservationmodal/reservationmodal.component";
-
+import { View } from "ui/core/view";
+import { Page } from "ui/page";
+import { Animation, AnimationDefinition } from "ui/animation";
+import * as enums from "ui/enums";
+import { CouchbaseService } from '../services/couchbase.service';
+import { Couchbase } from 'nativescript-couchbase';
 
 @Component({
     selector: 'app-reservation',
@@ -15,11 +20,16 @@ import { ReservationModalComponent } from "../reservationmodal/reservationmodal.
 export class ReservationComponent extends DrawerPage implements OnInit {
 
     reservation: FormGroup;
+    docId: string = "reservations";
+    submitted: boolean;
+    reservationView: View;
 
     constructor(private changeDetectorRef: ChangeDetectorRef,
         private formBuilder: FormBuilder,
         private modalService: ModalDialogService, 
-        private vcRef: ViewContainerRef) {
+        private vcRef: ViewContainerRef,
+        private page: Page, 
+        private couchbaseService: CouchbaseService) {
             super(changeDetectorRef);
 
             this.reservation = this.formBuilder.group({
@@ -30,7 +40,9 @@ export class ReservationComponent extends DrawerPage implements OnInit {
     }
 
     ngOnInit() {
-
+        //comment this out to persist reservations that have been submitted
+        this.couchbaseService.deleteDocument(this.docId);
+        this.submitted = false;
     }
 
     onSmokingChecked(args) {
@@ -73,8 +85,46 @@ export class ReservationComponent extends DrawerPage implements OnInit {
                 }
             });
     }
+    reservationAnimationView(){
+        this.reservationView= <View>this.page.getViewById<View>("reservationView");
+        this.reservationView.animate({
+            scale: { x: 0, y: 0}, 
+            opacity: 0.0,
+            duration: 500,
+            curve: enums.AnimationCurve.easeOut}
+
+        ).then(() => {
+            this.submitted = true;
+            this.reservationView.animate({
+              scale: { x: 1, y: 1}, 
+              opacity: 1.0,
+              duration: 500,
+              curve: enums.AnimationCurve.easeIn}     
+          );
+        });
+    }
+
+    addReservation()
+    {
+        let reservations: Array<any> = [];
+        let doc = this.couchbaseService.getDocument(this.docId);
+
+        if(doc == null) {
+            console.log("This is the first reservation");
+            reservations.push(this.reservation.value);
+            this.couchbaseService.createDocument({ "reservations": reservations }, this.docId);
+        }
+        else {
+            reservations = doc.reservations;
+            reservations.push(this.reservation.value);
+            this.couchbaseService.updateDocument(this.docId, { "reservations": reservations });
+        }
+        doc = this.couchbaseService.getDocument(this.docId);
+        console.log(JSON.stringify(doc));
+    }
 
     onSubmit() {
-        console.log(JSON.stringify(this.reservation.value));
+        this.addReservation();
+        this.reservationAnimationView();
     }
 }
